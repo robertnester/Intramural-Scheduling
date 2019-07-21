@@ -2,8 +2,14 @@ package com.company;
 
 public class PlayerDTO {
 
+    private int id;
     private String name;
     private int grade;
+
+    public PlayerDTO()
+        {
+
+    }
 
     public PlayerDTO(String name, int grade) {
         this.name = name;
@@ -25,6 +31,10 @@ public class PlayerDTO {
     public void setGrade(int grade) {
         this.grade = grade;
     }
+
+    public int getId () { return id;}
+
+    public void setId (int id) {this.id = id; }
 
 
 }

@@ -1,8 +1,12 @@
 package com.company;
 
 public class TeamDTO {
+    private int id;
     private String name;
     private boolean senior;
+
+    public TeamDTO() {
+    }
 
     public TeamDTO(String name, boolean senior) {
         this.name = name;
@@ -23,5 +27,13 @@ public class TeamDTO {
 
     public void setSenior(boolean senior) {
         this.senior = senior;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id){
+        this.id = id;
     }
 }

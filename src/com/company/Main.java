@@ -53,6 +53,7 @@ public class Main {
         TeamDTO t1 = new TeamDTO("Nuggets", true);
         TeamPlayerDAO tpd = new TeamPlayerDAO(c);
         tpd.init(t1,pList);
+        //tpd.selectAll();
 
 
         /*createNewTable();
