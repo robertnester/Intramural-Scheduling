@@ -1,6 +1,7 @@
-package com.company;
+package com.company.DTO;
 
 public class TeamDTO {
+
     private int id;
     private String name;
     private boolean senior;

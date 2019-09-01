@@ -1,4 +1,7 @@
-package com.company;
+package com.company.DAO;
+
+import com.company.SQLConnection;
+import com.company.DTO.TeamDTO;
 
 import java.sql.*;
 import java.util.*;
@@ -11,7 +14,7 @@ public class TeamDAO extends SQLConnection {
         conn = c;
     }
 
-    public void create() {
+    public void createTable() {
         String sql = "CREATE TABLE IF NOT EXISTS team (id integer PRIMARY KEY NOT NULL, name text UNIQUE NOT NULL, senior boolean);";
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
@@ -85,7 +88,7 @@ public class TeamDAO extends SQLConnection {
             pstmt.setString(1, name);
             pstmt.setBoolean(2, senior);
             pstmt.setInt(3, id);
-            // update
+            // updateWinner
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -96,7 +99,7 @@ public class TeamDAO extends SQLConnection {
      * select Team by Name
      */
     public TeamDTO getDTOByName(String name) {
-        String sql = "SELECT id, name, senior FROM team WHERE name = ?";
+        String sql = "SELECT id, senior FROM team WHERE name = ?";
 
         try {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -104,12 +107,35 @@ public class TeamDAO extends SQLConnection {
             // set the corresponding param
             pstmt.setString(1, name);
             // execute the select statement
-
             ResultSet rs = pstmt.executeQuery(sql);
             TeamDTO teamDTO = new TeamDTO();
             // loop through the result set
             while (rs.next()) {
                 teamDTO.setId(rs.getInt("id"));
+                teamDTO.setName(name);
+                teamDTO.setSenior(rs.getBoolean("senior"));
+            }
+            return teamDTO;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public TeamDTO getDTOById(int id) {
+        String sql = "SELECT name, senior FROM team WHERE id = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)){
+
+            // set the corresponding param
+            pstmt.setInt(1, id);
+            // execute the select statement
+
+            ResultSet rs = pstmt.executeQuery();
+            TeamDTO teamDTO = new TeamDTO();
+            // loop through the result set
+            while (rs.next()) {
+                teamDTO.setId(id);
                 teamDTO.setName(rs.getString("name"));
                 teamDTO.setSenior(rs.getBoolean("senior"));
             }
@@ -119,6 +145,7 @@ public class TeamDAO extends SQLConnection {
             return null;
         }
     }
+
     /**
      * select all rows in the warehouses table
      */
@@ -138,9 +165,6 @@ public class TeamDAO extends SQLConnection {
                     teamDTO.setName(rs.getString("name"));
                     teamDTO.setSenior(rs.getBoolean("senior"));
                     teams.add(teamDTO);
-                    System.out.println(rs.getInt("id") +  "\t" +
-                            rs.getString("name") + "\t" +
-                            rs.getBoolean("senior"));
                 }
                 return teams;
             } catch (SQLException e) {

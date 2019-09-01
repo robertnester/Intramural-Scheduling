@@ -1,4 +1,7 @@
-package com.company;
+package com.company.DAO;
+
+import com.company.DTO.PlayerDTO;
+import com.company.SQLConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,7 +15,7 @@ public class PlayerDAO extends SQLConnection {
         conn = c;
     }
 
-    public void create() {
+    public void createTable() {
         String sql = "CREATE TABLE IF NOT EXISTS player (id integer PRIMARY KEY NOT NULL, name text UNIQUE NOT NULL, grade integer);";
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
@@ -21,29 +24,19 @@ public class PlayerDAO extends SQLConnection {
         }
     }
 
-    public int insert(PlayerDTO p) {
+    public void insert(PlayerDTO p) {
         String sqlPlayer = "INSERT INTO player(name,grade) VALUES(?,?)";
 
-        try (
-             PreparedStatement pstmt = conn.prepareStatement(sqlPlayer, Statement.RETURN_GENERATED_KEYS)) {
-            ResultSet rs = pstmt.getGeneratedKeys();
+        try (PreparedStatement pstmt = conn.prepareStatement(sqlPlayer)) {
             pstmt.setString(1, p.getName());
             pstmt.setInt(2, p.getGrade());
-            int rowAffected = pstmt.executeUpdate();
+            pstmt.executeUpdate();
 
-            int playerId = -1;
-            if (rs.next()) {
-                playerId = rs.getInt(1);
-            }
-            if (rowAffected != 1) {
-                conn.rollback();
-            }
-            return playerId;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            return -1;
-        }
+    } catch(SQLException e) {
+        System.out.println(e.getMessage());
     }
+
+}
 
     /**
      * Delete a player specified by the id
@@ -51,7 +44,7 @@ public class PlayerDAO extends SQLConnection {
      * @param id
      */
     public void delete(int id) {
-        String sql = "DELETE FROM player WHERE player_id = ?";
+        String sql = "DELETE FROM player WHERE id = ?";
 
         try (//Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -76,7 +69,7 @@ public class PlayerDAO extends SQLConnection {
     public void update(int id, String name, String grade) {
         String sql = "UPDATE player SET name = ? , "
                 + "grade = ? "
-                + "WHERE player_id = ?";
+                + "WHERE id = ?";
 
         try (//Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -85,7 +78,7 @@ public class PlayerDAO extends SQLConnection {
             pstmt.setString(1, name);
             pstmt.setString(2, grade);
             pstmt.setInt(3, id);
-            // update
+            // updateWinner
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -140,9 +133,6 @@ public class PlayerDAO extends SQLConnection {
                 pDTO.setName(rs.getString("name"));
                 pDTO.setGrade(rs.getInt("grade"));
                 players.add(pDTO);
-                System.out.println(rs.getInt("id") +  "\t" +
-                        rs.getString("name") + "\t" +
-                        rs.getInt("grade"));
             }
             return players;
         } catch (SQLException e) {
