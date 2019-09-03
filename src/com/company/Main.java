@@ -52,7 +52,11 @@ public class Main {
         GameDayDAO gddao = new GameDayDAO(c);
         gddao.createTable();
 
-        List<PlayerDTO> pList = new ArrayList<PlayerDTO>();
+        GUI gui = new GUI(c);
+        gui.make();
+
+
+/*        List<PlayerDTO> pList = new ArrayList<PlayerDTO>();
         pList.add(new PlayerDTO("Robert Nester",12));
         pList.add(new PlayerDTO("Micheal Jackson",11));
         pList.add(new PlayerDTO("Biggie Smalls",12));
@@ -87,7 +91,7 @@ public class Main {
 
         System.out.println(t1.getId());
 
-        gddao.insert(new GameDTO(t1, t2), new GameDTO(t3, t4), new EligibleDayDTO(cal));
+        gddao.insert(new GameDTO(t1, t2), new GameDTO(t3, t4), new EligibleDayDTO(cal));*/
 
 /*
 

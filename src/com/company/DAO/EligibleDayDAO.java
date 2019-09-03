@@ -53,37 +53,17 @@ public class EligibleDayDAO {
         }
     }
 
-    /**
-     * Delete a player specified by the id
-     *
-     * @param id
-     */
-    public void delete(int id) {
-        String sql = "DELETE FROM game WHERE id = ?";
+
+    public void deleteByDate(Date day) {
+        String sql = "DELETE FROM eligibleday WHERE day = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             // set the corresponding param
-            pstmt.setInt(1, id);
+            pstmt.setDate(1, day);
             // execute the delete statement
             pstmt.executeUpdate();
 
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public void updateWinner(int id, int team_id) {
-        String sql = "UPDATE game SET winner_team_id = ? , "
-                + "WHERE id = ?";
-
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            // set the corresponding param
-            pstmt.setInt(1, team_id);
-            pstmt.setInt(2, id);
-            // updateWinner
-            pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -119,7 +99,7 @@ public class EligibleDayDAO {
                 EligibleDayDTO eldayDTO = new EligibleDayDTO();
                 eldayDTO.setId(rs.getInt("id"));
                 Date day = rs.getDate("day");
-                System.out.println(day);
+                //System.out.println(day);
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(day);
                 eldayDTO.setCalendar(cal);
