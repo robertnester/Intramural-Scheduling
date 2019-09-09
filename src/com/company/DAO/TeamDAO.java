@@ -150,7 +150,7 @@ public class TeamDAO extends SQLConnection {
      * select all rows in the warehouses table
      */
     public List<TeamDTO> selectAll(){
-            String sql = "SELECT id, name, senior FROM team";
+            String sql = "SELECT id, name, senior FROM team ORDER BY senior, name";
             List<TeamDTO> teams = new ArrayList<TeamDTO>();
             try (
                  Statement stmt  = conn.createStatement();

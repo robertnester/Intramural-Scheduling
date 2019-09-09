@@ -21,7 +21,7 @@ public class GameDayDAO {
         String sql = "CREATE TABLE IF NOT EXISTS gameday " +
                 "(id integer PRIMARY KEY NOT NULL, " +
                 "game1_id integer NOT NULL, " +
-                "game2_id integer NOT NULL, " +
+                "game2_id integer, " +
                 "elday_id integer NOT NULL, " +
                 "UNIQUE (game1_id, game2_id, elday_id), " +
                 "UNIQUE (game2_id, game1_id, elday_id), " +

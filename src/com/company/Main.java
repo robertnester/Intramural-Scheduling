@@ -53,7 +53,7 @@ public class Main {
         gddao.createTable();
 
         GUI gui = new GUI(c);
-        gui.make();
+        gui.TAB1make();
 
 
 /*        List<PlayerDTO> pList = new ArrayList<PlayerDTO>();

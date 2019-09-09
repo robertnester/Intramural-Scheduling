@@ -22,8 +22,8 @@ public class TeamPlayerDAO {
                 "team_id integer NOT NULL, " +
                 "player_id integer NOT NULL, " +
                 "UNIQUE (team_id, player_id), " +
-                "FOREIGN KEY (team_id) REFERENCES team (id), " +
-                "FOREIGN KEY (player_id) REFERENCES player (id));";
+                "FOREIGN KEY (team_id) REFERENCES team (id) ON DELETE CASCADE, " +
+                "FOREIGN KEY (player_id) REFERENCES player (id) ON DELETE CASCADE);";
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
         } catch (SQLException e) {

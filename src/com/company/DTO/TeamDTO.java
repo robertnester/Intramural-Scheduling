@@ -1,5 +1,7 @@
 package com.company.DTO;
 
+import java.util.Objects;
+
 public class TeamDTO {
 
     private int id;
@@ -36,5 +38,15 @@ public class TeamDTO {
 
     public void setId(int id){
         this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TeamDTO teamDTO = (TeamDTO) o;
+        return id == teamDTO.id &&
+                senior == teamDTO.senior &&
+                Objects.equals(name, teamDTO.name);
     }
 }

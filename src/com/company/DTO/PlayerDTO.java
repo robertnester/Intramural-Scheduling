@@ -11,9 +11,8 @@ public class PlayerDTO {
 
     }
 
-    public PlayerDTO(String name, int grade) {
+    public PlayerDTO(String name) {
         this.name = name;
-        this.grade = grade;
     }
 
     public String getName() {
