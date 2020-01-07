@@ -1,9 +1,9 @@
 package com.company;
 
-import java.sql.Array;
 import java.sql.Connection;
 
 import com.company.DAO.EligibleDayDAO;
+import com.company.DAO.GameDayDAO;
 import com.company.DAO.TeamPlayerDAO;
 import com.company.DTO.EligibleDayDTO;
 import com.company.DTO.PlayerDTO;
@@ -21,10 +21,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.*;
 import java.util.List;
 
 public class GUI {
+
     DatePicker datePicker1;
     Connection c;
     EligibleDayDAO eldao;
@@ -38,8 +38,10 @@ public class GUI {
     JScrollPane scroller;
     JTextField teamField;
     List<JTextField> playerFields;
+    JPanel panel4;
     boolean senior = true;
     JPanel schedPanel;
+    JTable scheduleTable;
 
     public GUI(Connection c) {
         this.c = c;
@@ -60,12 +62,10 @@ public class GUI {
         tab2.addActionListener(new TAB2Listener());
         JButton tab3 = new JButton("Schedule");
         tab3.addActionListener(new TAB3Listener());
-        JButton tab4 = new JButton("TAB4");
 
         panel.add(tab1);
         panel.add(tab2);
         panel.add(tab3);
-        panel.add(tab4);
 
         frame.getContentPane().add(BorderLayout.NORTH, panel);
     }
@@ -118,30 +118,18 @@ public class GUI {
 
         frame.getContentPane().add(BorderLayout.WEST, panel3);
 
-/*
+        panel4 = new JPanel();
 
+        JLabel imageLabel = new JLabel();
+        imageLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("image.jpg")));
+        panel4.add(imageLabel);
+        frame.getContentPane().add(BorderLayout.CENTER, panel4);
 
-        labelButton = new JButton("Change Label");
-        labelButton.addActionListener(new LabelListener());
-
-        JButton coolButton = new JButton("Change Cool");
-        labelButton.addActionListener(new CoolListener());
-
-        label = new JLabel("I'm a label");
-
-        frame.getContentPane().add(BorderLayout.NORTH, coolButton);
-        frame.getContentPane().add(BorderLayout.CENTER, label);
-        frame.getContentPane().add(BorderLayout.EAST, labelButton);*/
-
-        frame.setSize(800,600);
+        frame.setSize(1200,800);
         frame.setVisible(true);
     }
 
     public void TAB1remake() {
-        //text = new JTextArea(10,20);
-        //text.setLineWrap(true);
-
-
         panel3.remove(scroller);
         panel3.remove(delete);
 
@@ -164,25 +152,8 @@ public class GUI {
         panel3.add(scroller);
         panel3.add(delete);
 
-/*
-
-
-        labelButton = new JButton("Change Label");
-        labelButton.addActionListener(new LabelListener());
-
-        JButton coolButton = new JButton("Change Cool");
-        labelButton.addActionListener(new CoolListener());
-
-        label = new JLabel("I'm a label");
-
-        frame.getContentPane().add(BorderLayout.NORTH, coolButton);
-        frame.getContentPane().add(BorderLayout.CENTER, label);
-        frame.getContentPane().add(BorderLayout.EAST, labelButton);*/
-
         frame.setSize(800,600);
         frame.setVisible(true);
-
-
     }
 
     class TAB1Listener implements ActionListener {
@@ -215,19 +186,15 @@ public class GUI {
              String s = date.toString();
              System.out.println(s);
              eldao.deleteByDate(date);
-             //panel3.revalidate();
-             //panel3.repaint();
              TAB1remake(); } catch (Exception e) {
 
              }
-             //eldao.deleteByDate(new Date((String) list.getSelectedValue()))
         }
     }
 
     public void insertDate(LocalDate localDate){
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
-        //assuming start of day
         calendar.set(localDate.getYear(), localDate.getMonthValue()-1, localDate.getDayOfMonth());
         EligibleDayDTO eldto = new EligibleDayDTO(calendar);
         eldao.insert(eldto);
@@ -276,7 +243,7 @@ public class GUI {
         panel.add(createTeam);
 
         frame.getContentPane().add(BorderLayout.CENTER, panel);
-        frame.setSize(800,600);
+        frame.setSize(1200,800);
         frame.setVisible(true);
     }
 
@@ -312,22 +279,25 @@ public class GUI {
         frame.getContentPane().removeAll();
         frame.repaint();
         TABSmake();
-        schedPanel = new JPanel();
-        JButton schedInitButton = new JButton("Finalize and Create Schedule");
-        schedInitButton.addActionListener(new InitSchedListener());
-        schedPanel.add(schedInitButton);
-        frame.getContentPane().add(BorderLayout.CENTER, schedPanel);
-        frame.setSize(800,600);
-        frame.setVisible(true);
-    }
 
-    public void initSched() {
         Schedule s = new Schedule(c);
-        //Math.random()
+        GameDayDAO gddao = new GameDayDAO(c);
+        Object[] names = {"Dates", "Senior", "Team Name", "Player Names"};
+        ArrayList<Object[]> allRows = gddao.getAllRowInformation();
+        Object[][] objArray = new Object[allRows.size()][4];
+        int i = 0;
+        for (Object[] obj : allRows) {
+            objArray[i] = obj;
+            i++;
+        }
 
-        //schedPanel.add(table);
-        //frame.setSize(800,600);
-        //frame.setVisible(true);
+        schedPanel = new JPanel();
+        schedPanel.setLayout(new BoxLayout(schedPanel, BoxLayout.Y_AXIS));
+        scheduleTable = new JTable(objArray, names);
+        schedPanel.add(new JScrollPane(scheduleTable));
+        frame.getContentPane().add(BorderLayout.CENTER, schedPanel);
+        frame.setSize(1200,800);
+        frame.setVisible(true);
     }
 
     class TAB3Listener implements ActionListener {
@@ -335,24 +305,5 @@ public class GUI {
             TAB3make();
         }
     }
-
-    class InitSchedListener implements ActionListener {
-        public void actionPerformed(ActionEvent event) {
-            initSched();
-        }
-    }
-
-/*    class LabelListener implements ActionListener {
-        public void actionPerformed(ActionEvent event) {
-            label.setText("Ouch!!!");
-        }
-    }*/
-
-    /*class CoolListener implements ActionListener {
-        public void actionPerformed(ActionEvent event) {
-            label.setText("Cool!!!");
-            frame.repaint();
-        }
-    }*/
 }
 

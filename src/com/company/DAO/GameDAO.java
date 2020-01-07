@@ -1,7 +1,6 @@
 package com.company.DAO;
 
 import com.company.DTO.GameDTO;
-import com.company.DTO.PlayerDTO;
 import com.company.DTO.TeamDTO;
 
 import java.sql.*;
@@ -49,11 +48,6 @@ public class GameDAO {
         }
     }
 
-    /**
-     * Delete a player specified by the id
-     *
-     * @param id
-     */
     public void delete(int id) {
         String sql = "DELETE FROM game WHERE id = ?";
 
@@ -66,6 +60,16 @@ public class GameDAO {
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    public void deleteAll() {
+        String sql = "DELETE FROM game";
+
+            try (Statement stmt = conn.createStatement()) {
+                stmt.execute(sql);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
         }
     }
 
@@ -85,7 +89,7 @@ public class GameDAO {
         }
     }
 
-    public GameDTO getDTOById(int id) {
+    public GameDTO getDTOByID(int id) {
         String sql = "SELECT team1_id, team2_id FROM game WHERE id = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -93,7 +97,7 @@ public class GameDAO {
             // set the corresponding param
             pstmt.setInt(1, id);
             // updateWinner
-            ResultSet rs = pstmt.executeQuery(sql);
+            ResultSet rs = pstmt.executeQuery();
             TeamDTO teamDTO1 = new TeamDTO();
             TeamDTO teamDTO2 = new TeamDTO();
             TeamDAO tdao = new TeamDAO(conn);

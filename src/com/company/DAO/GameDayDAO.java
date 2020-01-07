@@ -3,9 +3,9 @@ package com.company.DAO;
 import com.company.DTO.EligibleDayDTO;
 import com.company.DTO.GameDTO;
 import com.company.DTO.PlayerDTO;
-import com.company.DTO.TeamDTO;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameDayDAO {
@@ -52,19 +52,20 @@ public class GameDayDAO {
             // set auto-commit mode to false
             conn.setAutoCommit(false);
 
-            // 1. insert a new team
+            // 1. insert a new game
             GameDAO gameDAO = new GameDAO(conn);
             EligibleDayDAO elDAO = new EligibleDayDAO(conn);
 
             gameDAO.insert(g1);
-            gameDAO.insert(g2);
-            elDAO.insert(e);
+            if (g2 != null) {
+                gameDAO.insert(g2);
+            }
 
             List<GameDTO> games = gameDAO.selectAll();
             for (GameDTO game : games){
                 if (game.equals(g1)) {
                     game1ID = game.getId();
-                } else if (game.equals(g2)) {
+                } else if (g2 != null && game.equals(g2)) {
                     game2ID = game.getId();
                 }
             }
@@ -77,11 +78,15 @@ public class GameDayDAO {
                 }
             }
 
-                //playerDTO = playerDAO.getDTOByName(playerDTO.getName());
+            //playerDTO = playerDAO.getDTOByName(playerDTO.getName());
             pstmt = conn.prepareStatement(sqlGameDay);
 
             pstmt.setInt(1, game1ID);
-            pstmt.setInt(2, game2ID);
+            if (g2 != null) {
+                pstmt.setInt(2, game2ID);
+            } else {
+                pstmt.setInt(2, 0);
+            }
             pstmt.setInt(3, eldayID);
             pstmt.executeUpdate();
 
@@ -116,26 +121,74 @@ public class GameDayDAO {
         }
     }
 
-    /**
-     * Delete a player specified by the id
-     *
-     * @param id
-     */
-/*    public void delete(int id) {
-        String sql = "DELETE FROM game WHERE id = ?";
+    public void deleteAll() {
+        String sql = "DELETE FROM gameday";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            // set the corresponding param
-            pstmt.setInt(1, id);
-            // execute the delete statement
-            pstmt.executeUpdate();
-
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-    }*/
+    }
 
+    public ArrayList<Object[]> getAllRowInformation(){
+        String sql = "SELECT game1_id, game2_id, elday_id FROM gameday";
+        ArrayList<Object[]> rows = new ArrayList<Object[]>();
 
+        EligibleDayDAO eldao = new EligibleDayDAO(conn);
+        GameDAO gdao = new GameDAO(conn);
+        TeamPlayerDAO tpdao = new TeamPlayerDAO(conn);
+
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                boolean t1IsSenior = gdao.getDTOByID(rs.getInt("game1_id")).getTeam1().isSenior();
+                String t1Name = gdao.getDTOByID(rs.getInt("game1_id")).getTeam1().getName();
+                ArrayList<PlayerDTO> t1Players = tpdao.getPlayerByTeamID(gdao.getDTOByID(rs.getInt("game1_id")).getTeam1().getId());
+                String t1PlayerNames = "";
+                for (PlayerDTO pdto : t1Players) {
+                    t1PlayerNames += pdto.getName();
+                    t1PlayerNames += ", ";
+                }
+                String t2Name = gdao.getDTOByID(rs.getInt("game1_id")).getTeam2().getName();
+                ArrayList<PlayerDTO> t2Players = tpdao.getPlayerByTeamID(gdao.getDTOByID(rs.getInt("game1_id")).getTeam2().getId());
+                String t2PlayerNames = "";
+                for (PlayerDTO pdto : t2Players) {
+                    t2PlayerNames += pdto.getName();
+                    t2PlayerNames += ", ";
+                }
+                Object[] objArray = {eldao.getDTOByID(rs.getInt("elday_id")).getDayString(), t1IsSenior, t1Name, t1PlayerNames};
+                Object[] objArray2 = {"", "", t2Name, t2PlayerNames};
+                rows.add(objArray);
+                rows.add(objArray2);
+
+                boolean t3IsSenior = gdao.getDTOByID(rs.getInt("game2_id")).getTeam1().isSenior();
+                String t3Name = gdao.getDTOByID(rs.getInt("game2_id")).getTeam1().getName();
+                ArrayList<PlayerDTO> t3Players = tpdao.getPlayerByTeamID(gdao.getDTOByID(rs.getInt("game2_id")).getTeam1().getId());
+                String t3PlayerNames = "";
+                for (PlayerDTO pdto : t3Players) {
+                    t3PlayerNames += pdto.getName();
+                    t3PlayerNames += ", ";
+                }
+                String t4Name = gdao.getDTOByID(rs.getInt("game2_id")).getTeam2().getName();
+                ArrayList<PlayerDTO> t4Players = tpdao.getPlayerByTeamID(gdao.getDTOByID(rs.getInt("game2_id")).getTeam2().getId());
+                String t4PlayerNames = "";
+                for (PlayerDTO pdto : t4Players) {
+                    t4PlayerNames += pdto.getName();
+                    t4PlayerNames += ", ";
+                }
+                Object[] objArray3 = {"", t3IsSenior, t3Name, t3PlayerNames};
+                Object[] objArray4 = {"", "", t4Name, t4PlayerNames};
+                rows.add(objArray3);
+                rows.add(objArray4);
+            }
+            return rows;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
 
 }

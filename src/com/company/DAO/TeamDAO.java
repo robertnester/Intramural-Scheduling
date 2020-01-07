@@ -23,7 +23,6 @@ public class TeamDAO extends SQLConnection {
         }
     }
 
-    //ADD JAVAC COMMENTS
     public int insert(TeamDTO t) {
         String sql = "INSERT INTO team(name,senior) VALUES(?,?)";
 
@@ -72,9 +71,6 @@ public class TeamDAO extends SQLConnection {
     /**
      * Update data of a Team specified by the id
      *
-     * @param id
-     * @param name name of the player
-     * @param senior capacity of the warehouse
      */
     public void update(int id, String name, boolean senior) {
         String sql = "UPDATE team SET name = ? , "
@@ -146,9 +142,6 @@ public class TeamDAO extends SQLConnection {
         }
     }
 
-    /**
-     * select all rows in the warehouses table
-     */
     public List<TeamDTO> selectAll(){
             String sql = "SELECT id, name, senior FROM team ORDER BY senior, name";
             List<TeamDTO> teams = new ArrayList<TeamDTO>();
@@ -157,7 +150,6 @@ public class TeamDAO extends SQLConnection {
                  ResultSet rs    = stmt.executeQuery(sql)){
 
                 // loop through the result set
-
                 while (rs.next()) {
 
                     TeamDTO teamDTO = new TeamDTO();

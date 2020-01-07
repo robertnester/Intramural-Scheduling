@@ -35,9 +35,7 @@ public class PlayerDAO extends SQLConnection {
     } catch(SQLException e) {
         System.out.println(e.getMessage());
     }
-
 }
-
     /**
      * Delete a player specified by the id
      *
@@ -46,8 +44,7 @@ public class PlayerDAO extends SQLConnection {
     public void delete(int id) {
         String sql = "DELETE FROM player WHERE id = ?";
 
-        try (//Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             // set the corresponding param
             pstmt.setInt(1, id);
@@ -59,20 +56,12 @@ public class PlayerDAO extends SQLConnection {
         }
     }
 
-    /**
-     * Update data of a warehouse specified by the id
-     *
-     * @param id
-     * @param name name of the player
-     * @param grade capacity of the warehouse
-     */
     public void update(int id, String name, String grade) {
         String sql = "UPDATE player SET name = ? , "
                 + "grade = ? "
                 + "WHERE id = ?";
 
-        try (//Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             // set the corresponding param
             pstmt.setString(1, name);
@@ -94,7 +83,6 @@ public class PlayerDAO extends SQLConnection {
 
         try {
             PreparedStatement pstmt = conn.prepareStatement(sql);
-
             // set the corresponding param
             pstmt.setString(1, name);
             // execute the select statement
@@ -114,9 +102,30 @@ public class PlayerDAO extends SQLConnection {
         }
     }
 
-    /**
-     * select all rows in the warehouses table
-     */
+    public PlayerDTO getDTOByID(int id) {
+        String sql = "SELECT name, grade FROM player WHERE id = ?";
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            // set the corresponding param
+            pstmt.setInt(1, id);
+            // execute the select statement
+            ResultSet rs = pstmt.executeQuery();
+            PlayerDTO playerDTO = new PlayerDTO();
+            // loop through the result set
+            while (rs.next()) {
+                playerDTO.setId(id);
+                playerDTO.setName(rs.getString("name"));
+                playerDTO.setGrade(rs.getInt("grade"));
+            }
+            return playerDTO;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
     public List<PlayerDTO> selectAll(){
         String sql = "SELECT id, name, grade FROM player";
         List<PlayerDTO> players = new ArrayList<PlayerDTO>();
@@ -125,7 +134,6 @@ public class PlayerDAO extends SQLConnection {
                 ResultSet rs    = stmt.executeQuery(sql)){
 
             // loop through the result set
-
             while (rs.next()) {
 
                 PlayerDTO pDTO = new PlayerDTO();
@@ -140,5 +148,4 @@ public class PlayerDAO extends SQLConnection {
             return null;
         }
     }
-
 }

@@ -1,11 +1,10 @@
 package com.company.DAO;
 
-import com.company.DAO.PlayerDAO;
-import com.company.DAO.TeamDAO;
 import com.company.DTO.PlayerDTO;
 import com.company.DTO.TeamDTO;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TeamPlayerDAO {
@@ -128,6 +127,32 @@ public class TeamPlayerDAO {
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    public ArrayList<PlayerDTO> getPlayerByTeamID(int team_id){
+        String sql = "SELECT player_id FROM teamplayer WHERE team_id = ?";
+
+        ArrayList<PlayerDTO> pdtos = new ArrayList<PlayerDTO>();
+        PlayerDAO pdao = new PlayerDAO(conn);
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            // set the corresponding param
+            pstmt.setInt(1, team_id);
+            // execute the select statement
+            ResultSet rs = pstmt.executeQuery();
+            // loop through the result set
+            int player_id;
+            while (rs.next()) {
+                player_id = rs.getInt("player_id");
+                pdtos.add(pdao.getDTOByID(player_id));
+            }
+            return pdtos;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
         }
     }
 

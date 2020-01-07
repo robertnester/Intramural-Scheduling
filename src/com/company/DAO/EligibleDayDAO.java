@@ -1,7 +1,6 @@
 package com.company.DAO;
 
 import com.company.DTO.EligibleDayDTO;
-import com.company.DTO.TeamDTO;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -36,20 +35,9 @@ public class EligibleDayDAO {
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             ResultSet rs = pstmt.getGeneratedKeys();
             pstmt.setDate(1, new Date(el.getCalendar().getTimeInMillis()));
-            //int rowAffected =
             pstmt.executeUpdate();
-
-            /*int eldayId = -1;
-            if (rs.next()) {
-                eldayId = rs.getInt(1);
-            }
-            if (rowAffected != 1) {
-                conn.rollback();
-            }
-            return eldayId;*/
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            //return -1;
         }
     }
 
@@ -112,5 +100,29 @@ public class EligibleDayDAO {
         }
     }
 
+    public EligibleDayDTO getDTOByID(int id) {
+        String sql = "SELECT day FROM eligibleday WHERE id = ?";
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            // set the corresponding param
+            pstmt.setInt(1, id);
+            // execute the select statement
+            ResultSet rs = pstmt.executeQuery();
+            // loop through the result set
+            EligibleDayDTO eldayDTO = new EligibleDayDTO();
+            while (rs.next()) {
+                Date day = rs.getDate("day");
+                //System.out.println(day);
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(day);
+                eldayDTO.setCalendar(cal);
+            }
+            return eldayDTO;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
 
 }
