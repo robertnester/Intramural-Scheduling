@@ -3,7 +3,7 @@
 Intramural sports scheduling system for my school. SQLite used for database management. Java Swing used for GUI.
 
 ![Screenshot 1](sc-1-3.png)
-Date selection screen. Dates can be individually selected on the right and then are displayed on the left. Dates can also be individually deleted on the left.
+Date selection screen. Dates can be individually selected on the right and are then displayed on the left. Dates can also be individually deleted on the left.
 ![Screenshot 2](sc-2.png)
 Calendar that opens up when the ADD button is clicked.
 ![Screenshot 3](sc-3.png)
