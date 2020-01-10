@@ -2,7 +2,7 @@
 
 Intramural sports scheduling system for my school.
 
-![Screenshot 1](sc-1-2.png)
+![Screenshot 1](sc-1-3.png)
 
 ![Screenshot 2](sc-2.png)
 
