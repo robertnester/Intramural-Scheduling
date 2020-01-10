@@ -1,4 +1,4 @@
-# intramural-scheduling
+# Intramural Scheduling System
 
 Intramural sports scheduling system for my school. SQLite database used for data.
 
