@@ -90,7 +90,7 @@ public class Schedule {
                     d+=2;
                 }
             } gddao.insert(seniorGameDTOs.get(seniorGameDTOs.size()-1), null, eldays.get(d));
-        } else {
+        } else if (seniorSmaller) {
             while (!(juniorGameDTOs.get(i).equals(juniorGameDTOs.get(juniorGameDTOs.size()-1)))) {
                 GameDTO game1 = juniorGameDTOs.get(i);
                 GameDTO game2 = juniorGameDTOs.get(i+1);
