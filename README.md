@@ -1,7 +1,7 @@
 # Intramural Scheduling System
 
 ## Technical Overview
-Intramural sports scheduling application for schools. The application uses The Data Access Object (DAO) pattern to isolate the application/business layer from the persistence layer implemented with a SQLite database. Java Swing is used for the Graphical User Interface (GUI).
+Intramural sports scheduling application for high schools/universities. The application uses The Data Access Object (DAO) pattern to isolate the application/business layer from the persistence layer implemented with a SQLite database. Java Swing is used for the Graphical User Interface (GUI).
 
 ## User Experience
 ![Screenshot 1](screenshots/sc-1.png)
